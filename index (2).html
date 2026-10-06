@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thí nghiệm Thủy phân Tinh bột - Hóa học 12</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        lab: {
+                            bg: '#0F172A',
+                            card: '#1E293B',
+                            border: '#334155',
+                            cyan: '#06B6D4',
+                            amber: '#F59E0B',
+                            brick: '#C2410C'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B1120;
+            color: #E2E8F0;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Glassmorphism panel */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.78);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Test tube animations */
+        @keyframes liquidBubbling {
+            0% { transform: translateY(0) scale(0.9); opacity: 0.8; }
+            50% { transform: translateY(-30px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(-70px) scale(0.6); opacity: 0; }
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.65);
+            pointer-events: none;
+            animation: liquidBubbling 1.2s infinite ease-out;
+        }
+
+        @keyframes steamRise {
+            0% { transform: translateY(0) scaleX(1); opacity: 0.35; }
+            50% { transform: translateY(-25px) scaleX(1.3); opacity: 0.2; }
+            100% { transform: translateY(-50px) scaleX(1.6); opacity: 0; }
+        }
+
+        .steam-wave {
+            animation: steamRise 2s infinite linear;
+        }
+
+        /* Glowing heat coil */
+        @keyframes heatGlow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.7)); }
+            50% { filter: drop-shadow(0 0 14px rgba(249, 115, 22, 0.95)); }
+        }
+        .heat-active {
+            animation: heatGlow 1.8s infinite ease-in-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+
+        /* ===== V6 LIGHT THEME ===== */
+        body {
+            background: linear-gradient(180deg, #eef8ff 0%, #f8fbff 48%, #eef6ff 100%) !important;
+            color: #16324f !important;
+        }
+        header { background: rgba(255,255,255,.94) !important; border-color:#cbdff2 !important; box-shadow:0 6px 24px rgba(30,64,175,.08); }
+        footer { background:#f8fbff !important; border-color:#cbdff2 !important; color:#64748b !important; }
+        .glass-panel {
+            background: rgba(255,255,255,.92) !important;
+            border: 1px solid #cfe2f3 !important;
+            box-shadow: 0 12px 30px rgba(30, 64, 175, .08) !important;
+        }
+        .bg-slate-950\/80,.bg-slate-950\/60,.bg-slate-950 { background-color:#f7fbff !important; }
+        .bg-slate-900\/90,.bg-slate-900\/70,.bg-slate-900\/60,.bg-slate-900 { background-color:#eef6ff !important; }
+        .bg-slate-800 { background-color:#e3eef9 !important; }
+        .bg-slate-700 { background-color:#d4e3f1 !important; }
+        .border-slate-800,.border-slate-800\/80,.border-slate-800\/90,.border-slate-700 { border-color:#c9dced !important; }
+        .text-slate-100,.text-slate-200 { color:#16324f !important; }
+        .text-slate-300 { color:#31506f !important; }
+        .text-slate-400 { color:#5b7188 !important; }
+        .text-slate-500 { color:#71859a !important; }
+        .text-cyan-200,.text-cyan-300,.text-cyan-400 { color:#087ea4 !important; }
+        .text-violet-200 { color:#6d28d9 !important; }
+        #lab-bench { background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(219,238,251,.18)); border-radius:18px; }
+        #instruction-banner { background:#f4faff !important; border-color:#8fd7ed !important; }
+        #reaction-state-pill { box-shadow:none !important; }
+        #quiz-panel > div { background:rgba(255,255,255,.96) !important; border-color:#c4b5fd !important; box-shadow:0 12px 30px rgba(109,40,217,.08) !important; }
+        .quiz-item { background:#ffffff !important; border-color:#d7e3ef !important; box-shadow:0 5px 15px rgba(15,23,42,.05); }
+        .quiz-option { background:#f7fbff !important; border-color:#cbdbea !important; color:#294761 !important; }
+        .quiz-option:hover { background:#eef9ff !important; border-color:#22a7c7 !important; }
+        .quiz-option.border-emerald-500 { border-color:#10b981 !important; background:#ecfdf5 !important; }
+        .quiz-option.border-rose-500 { border-color:#f43f5e !important; background:#fff1f2 !important; }
+        .quiz-feedback.bg-emerald-950\/40 { background:#ecfdf5 !important; color:#047857 !important; border:1px solid #a7f3d0; }
+        .quiz-feedback.bg-rose-950\/40 { background:#fff1f2 !important; color:#be123c !important; border:1px solid #fecdd3; }
+        .quiz-feedback.bg-amber-950\/40 { background:#fffbeb !important; color:#b45309 !important; border:1px solid #fde68a; }
+        #quiz-score { background:#eef9ff !important; border-color:#8fd7ed !important; color:#087ea4 !important; }
+        #quiz-result { color:#425d75 !important; }
+        ::-webkit-scrollbar-track { background:#eaf3fb !important; }
+        ::-webkit-scrollbar-thumb { background:#9eb8ce !important; }
+    
+        /* Contrast panels behind test tubes: keep reaction colors visible in both light/dark surroundings */
+        .tube-contrast-panel {
+            position: relative;
+            padding: 14px 18px 10px;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(226,242,255,.96) 0%, rgba(207,232,248,.92) 58%, rgba(187,218,238,.90) 100%);
+            border: 1px solid rgba(56, 132, 173, .28);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 28px rgba(15,79,110,.10);
+            isolation: isolate;
+        }
+        .tube-contrast-panel::before {
+            content: ""; position:absolute; inset:10px; border-radius:16px; z-index:-1;
+            background: radial-gradient(circle at 50% 42%, rgba(255,255,255,.95), rgba(219,239,250,.55) 55%, rgba(177,211,231,.28) 100%);
+        }
+        .tube-contrast-panel .rounded-b-full {
+            filter: drop-shadow(0 3px 3px rgba(15, 52, 72, .18));
+        }
+
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white">
+
+    <!-- Top Bar Navigation -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-900/30">
+                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        Phòng Thí Nghiệm Ảo: Thủy Phân Tinh Bột
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/60">Hóa học 12</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Chuẩn hóa theo SGK mới (Chương Carbohydrate - Phản ứng thủy phân & tính khử)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button id="toggle-sound-btn" class="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg flex items-center gap-1.5 transition">
+                    <svg id="sound-icon" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                    <span id="sound-status-label">Âm thanh: Bật</span>
+                </button>
+                <button id="reset-lab-btn" class="px-3 py-1.5 text-xs font-medium text-rose-300 bg-rose-950/40 hover:bg-rose-900/50 border border-rose-800/60 rounded-lg flex items-center gap-1.5 transition">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Làm lại từ đầu
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Interactive Workspace -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left/Center Lab Area (Cols 1-8) -->
+        <div class="lg:col-span-8 flex flex-col gap-5">
+            <!-- Stage Progression Indicators -->
+            <div class="glass-panel p-3.5 rounded-2xl flex items-center justify-between overflow-x-auto gap-2 border border-slate-800" id="step-indicators-bar">
+                <!-- Step badges dynamically generated or styled -->
+                <div class="step-chip active flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium whitespace-nowrap transition-all duration-300" id="chip-1">
+                    <span class="w-4 h-4 rounded-full bg-cyan-400 text-slate-950 font-bold flex items-center justify-center text-[10px]">1</span>
+                    <span>Hồ tinh bột + HCl</span>
+                </div>
+                <div class="h-0.5 w-3 bg-slate-700 hidden md:block"></div>
+                <div class="step-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 text-slate-400 text-xs font-medium whitespace-nowrap transition-all duration-300" id="chip-2">
+                    <span class="w-4 h-4 rounded-full bg-slate-800 text-slate-300 font-bold flex items-center justify-center text-[10px]">2</span>
+                    <span>Đun cách thủy Ống 1</span>
+                </div>
+                <div class="h-0.5 w-3 bg-slate-700 hidden md:block"></div>
+                <div class="step-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 text-slate-400 text-xs font-medium whitespace-nowrap transition-all duration-300" id="chip-3">
+                    <span class="w-4 h-4 rounded-full bg-slate-800 text-slate-300 font-bold flex items-center justify-center text-[10px]">3</span>
+                    <span>Trung hòa bằng NaHCO₃</span>
+                </div>
+                <div class="h-0.5 w-3 bg-slate-700 hidden md:block"></div>
+                <div class="step-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 text-slate-400 text-xs font-medium whitespace-nowrap transition-all duration-300" id="chip-4">
+                    <span class="w-4 h-4 rounded-full bg-slate-800 text-slate-300 font-bold flex items-center justify-center text-[10px]">4</span>
+                    <span>Tạo Cu(OH)₂ ở Ống 2</span>
+                </div>
+                <div class="h-0.5 w-3 bg-slate-700 hidden md:block"></div>
+                <div class="step-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 text-slate-400 text-xs font-medium whitespace-nowrap transition-all duration-300" id="chip-5">
+                    <span class="w-4 h-4 rounded-full bg-slate-800 text-slate-300 font-bold flex items-center justify-center text-[10px]">5</span>
+                    <span>Chuyển 2mL từ Ống 1 → 2</span>
+                </div>
+                <div class="h-0.5 w-3 bg-slate-700 hidden md:block"></div>
+                <div class="step-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 text-slate-400 text-xs font-medium whitespace-nowrap transition-all duration-300" id="chip-6">
+                    <span class="w-4 h-4 rounded-full bg-slate-800 text-slate-300 font-bold flex items-center justify-center text-[10px]">6</span>
+                    <span>Đun cách thủy Ống 2 (Cu₂O)</span>
+                </div>
+            </div>
+
+            <!-- Lab Workstation Canvas & Apparatus -->
+            <div class="glass-panel p-6 rounded-2xl relative min-h-[480px] flex flex-col justify-between overflow-hidden shadow-2xl border border-slate-800/90">
+                <!-- Background Lab Grid & Ambient Glow -->
+                <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:18px_18px] opacity-40 pointer-events-none"></div>
+                <div class="absolute -top-24 -right-24 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <!-- Top Prompt Alert Inside Bench -->
+                <div id="instruction-banner" class="relative z-10 p-3.5 rounded-xl bg-slate-900/90 border border-cyan-500/30 shadow-inner flex items-start gap-3">
+                    <div class="p-2 rounded-lg bg-cyan-950 text-cyan-400 shrink-0">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-cyan-900/60 text-cyan-300 border border-cyan-700/50" id="step-tag">Bước 1 / 6</span>
+                            <h4 class="text-sm font-semibold text-cyan-200" id="banner-title">Chuẩn bị mẫu thủy phân ở Ống nghiệm 1</h4>
+                        </div>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed" id="banner-desc">
+                            Cho khoảng <strong>5 mL dung dịch hồ tinh bột 1%</strong> vào Ống nghiệm 1, sau đó thêm <strong>1 mL dung dịch HCl 1 M</strong> làm xúc tác acid và lắc đều.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TRANSFER ANIMATION PIPETTE (Moving between tubes) -->
+                <div id="transfer-pipette" class="absolute z-40 pointer-events-none opacity-0 transition-all duration-700 flex flex-col items-center" style="left: 20%; top: 25%;">
+                    <div class="w-3.5 h-16 bg-slate-300/80 rounded-t-full border border-slate-400/80 shadow-lg relative flex flex-col justify-end p-0.5">
+                        <div id="pipette-liquid" class="w-full h-10 bg-cyan-300/60 rounded-b-sm transition-all duration-300"></div>
+                        <div class="w-1.5 h-6 bg-slate-400/90 mx-auto -mb-6 rounded-b"></div>
+                        <div id="pipette-drop" class="w-2.5 h-2.5 rounded-full bg-cyan-400 absolute -bottom-9 left-0.5 opacity-0 transition-opacity"></div>
+                    </div>
+                    <span id="pipette-label" class="mt-8 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-900 text-cyan-300 border border-slate-700 shadow">Hút 2 mL</span>
+                </div>
+
+                <!-- Chemical Bench & Apparatus Display Area -->
+                <div class="relative z-10 flex-1 flex items-end justify-around py-6 px-2 gap-4 select-none" id="lab-bench">
+                    
+                    <!-- LEFT: TUBE 1 (Ống thủy phân tinh bột) -->
+                    <div class="flex flex-col items-center relative tube-contrast-panel" id="stage-tube-1-container">
+                        <div class="flex items-center gap-1.5 mb-2">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-800 border border-cyan-500/40 text-cyan-300 shadow">
+                                Ống nghiệm 1
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-mono">(Thủy phân)</span>
+                        </div>
+                        
+                        <!-- Test Tube 1 Apparatus -->
+                        <div id="tube-1-apparatus" class="relative w-14 h-60 flex flex-col items-center justify-end">
+                            <div class="w-12 h-56 rounded-b-full border-2 border-slate-300/70 bg-white/5 backdrop-blur-[2px] relative overflow-hidden shadow-2xl flex flex-col justify-end p-0.5">
+                                <!-- Graduations -->
+                                <div class="absolute top-10 right-1 w-2.5 h-[1px] bg-slate-400/50"></div>
+                                <div class="absolute top-18 right-1 w-4 h-[1px] bg-slate-400/60"></div>
+                                <div class="absolute top-26 right-1 w-2.5 h-[1px] bg-slate-400/50"></div>
+                                <div class="absolute top-36 right-1 w-4 h-[1px] bg-slate-400/60"></div>
+
+                                <!-- Dynamic Liquid Column 1 -->
+                                <div id="liquid-tube-1" class="w-full rounded-b-full transition-all duration-700 relative overflow-hidden flex flex-col justify-end" style="height: 0%; background: rgba(241, 245, 249, 0.4);">
+                                    <div class="w-full h-1.5 bg-white/40 rounded-t-full shadow-sm"></div>
+                                    <!-- Bubbles container for NaHCO3 effervescence -->
+                                    <div id="bubbles-container-1" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+                                    <!-- White NaHCO3 powder deposit -->
+                                    <div id="powder-sediment-1" class="w-full h-2 bg-white/90 rounded-b-full opacity-0 transition-opacity duration-500"></div>
+                                </div>
+                            </div>
+                            <!-- Base shadow -->
+                            <div class="w-16 h-3 bg-black/40 rounded-full blur-[2px] -mt-1"></div>
+                        </div>
+                        <div id="tube-1-status" class="text-center mt-2 max-w-[130px]">
+                            <span id="tube-1-label" class="text-[11px] text-slate-400 font-mono block">Chưa có mẫu</span>
+                            <span id="tube-1-desc" class="text-[10px] text-slate-500 block leading-tight">Đang chờ nạp hóa chất</span>
+                        </div>
+                    </div>
+
+                    <!-- CENTER: WATER BATH & HEATING STATION (Cốc thủy tinh + Bếp điện) -->
+                    <div class="flex flex-col items-center relative" id="water-bath-station">
+                        <div class="flex items-center gap-1.5 mb-2">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-800 border border-amber-500/40 text-amber-300 shadow">
+                                Cốc đun cách thủy
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-mono">(Nước nóng ~90°C)</span>
+                        </div>
+                        
+                        <!-- Steam indicators -->
+                        <div id="steam-container" class="w-20 h-10 absolute top-2 flex justify-around opacity-0 transition-opacity duration-700 pointer-events-none">
+                            <div class="w-1.5 h-8 bg-slate-300/40 rounded-full blur-[2px] steam-wave"></div>
+                            <div class="w-2 h-10 bg-slate-300/30 rounded-full blur-[2px] steam-wave" style="animation-delay: 0.4s;"></div>
+                            <div class="w-1.5 h-7 bg-slate-300/40 rounded-full blur-[2px] steam-wave" style="animation-delay: 0.8s;"></div>
+                        </div>
+
+                        <!-- 250mL Beaker with Hot Water -->
+                        <div class="w-32 h-40 border-2 border-slate-300/60 rounded-b-xl relative bg-white/5 backdrop-blur-[2px] flex flex-col justify-end p-1 shadow-2xl">
+                            <!-- Beaker Spout -->
+                            <div class="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-slate-300/60 rotate-45"></div>
+
+                            <!-- Beaker scale marks -->
+                            <div class="absolute top-10 left-1 w-3 h-[1px] bg-slate-400/50"></div>
+                            <div class="absolute top-18 left-1 w-4 h-[1px] bg-slate-400/70"></div>
+                            <div class="absolute top-26 left-1 w-3 h-[1px] bg-slate-400/50"></div>
+
+                            <!-- Hot Water Liquid -->
+                            <div class="w-full h-28 rounded-b-lg bg-cyan-500/15 border-t border-cyan-300/40 relative overflow-hidden transition-all flex items-end justify-center">
+                                <div class="absolute inset-0 bg-gradient-to-t from-cyan-400/10 to-transparent"></div>
+                                
+                                <!-- Submerged Tube Container (Can host either Tube 1 or Tube 2) -->
+                                <div id="submerged-tube-ghost" class="w-10 h-36 rounded-b-full border border-slate-300/70 bg-white/10 opacity-0 transform translate-y-8 transition-all duration-700 overflow-hidden flex flex-col justify-end p-0.5 shadow-lg">
+                                    <div id="submerged-liquid" class="w-full h-1/2 rounded-b-full bg-slate-200/50 transition-all duration-1000"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Electric Stove / Bếp điện -->
+                        <div class="w-40 h-10 rounded-lg bg-slate-800 border border-slate-700 shadow-xl flex items-center justify-between px-3 mt-1 relative">
+                            <!-- Heating ring -->
+                            <div id="heat-coil" class="w-24 h-2.5 rounded-full bg-slate-600 transition-colors duration-500"></div>
+                            <!-- Power Switch & Indicator light -->
+                            <div class="flex items-center gap-1.5">
+                                <div id="stove-light" class="w-2.5 h-2.5 rounded-full bg-rose-950 border border-rose-800"></div>
+                                <span class="text-[9px] font-mono text-slate-400 uppercase font-bold">Bếp</span>
+                            </div>
+                        </div>
+                        <span id="stove-temp-label" class="text-[11px] text-slate-400 mt-1 font-mono">Bếp: Tắt (Nguội)</span>
+                    </div>
+
+                    <!-- RIGHT: TUBE 2 (Ống điều chế Cu(OH)2 & Thử tính khử) -->
+                    <div class="flex flex-col items-center relative tube-contrast-panel" id="stage-tube-2-container">
+                        <div class="flex items-center gap-1.5 mb-2">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-800 border border-sky-500/40 text-sky-300 shadow">
+                                Ống nghiệm 2
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-mono">(Cu(OH)₂ & Khử)</span>
+                        </div>
+                        
+                        <div id="tube-2-apparatus" class="relative w-14 h-60 flex flex-col items-center justify-end">
+                            <div class="w-12 h-56 rounded-b-full border-2 border-slate-300/70 bg-white/5 backdrop-blur-[2px] relative overflow-hidden shadow-2xl flex flex-col justify-end p-0.5">
+                                <!-- Scale marks -->
+                                <div class="absolute top-10 right-1 w-2.5 h-[1px] bg-slate-400/50"></div>
+                                <div class="absolute top-18 right-1 w-4 h-[1px] bg-slate-400/60"></div>
+                                <div class="absolute top-26 right-1 w-2.5 h-[1px] bg-slate-400/50"></div>
+
+                                <!-- Dynamic Liquid Column 2 -->
+                                <div id="liquid-tube-2" class="w-full rounded-b-full transition-all duration-700 relative overflow-hidden flex flex-col justify-end" style="height: 0%; background: transparent;">
+                                    <div class="w-full h-1.5 bg-white/40 rounded-t-full shadow-sm"></div>
+                                    <!-- Precipitate particles & sediment -->
+                                    <div id="precipitate-cloud-2" class="w-full h-full absolute inset-0 opacity-0 transition-opacity duration-700 flex flex-col justify-end">
+                                        <div id="sediment-layer-2" class="w-full h-5 rounded-b-full transition-all duration-700"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-16 h-3 bg-black/40 rounded-full blur-[2px] -mt-1"></div>
+                        </div>
+                        <div id="tube-2-status" class="text-center mt-2 max-w-[130px]">
+                            <span id="tube-2-label" class="text-[11px] text-slate-400 font-mono block">Ống nghiệm sạch</span>
+                            <span id="tube-2-desc" class="text-[10px] text-slate-500 block leading-tight">Dự bị cho Cu(OH)₂</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Reagents Shelf Ribbon -->
+                <div class="relative z-10 py-2.5 px-3 rounded-xl bg-slate-900/70 border border-slate-800 flex items-center justify-between flex-wrap gap-2 text-xs">
+                    <span class="text-slate-400 text-[11px] font-semibold uppercase flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        </svg>
+                        Tủ hóa chất:
+                    </span>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[11px]">Hồ tinh bột 1%</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[11px]">HCl 1M</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-amber-300 border border-amber-700/50 text-[11px]">NaHCO₃ (rắn)</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-sky-300 border border-sky-700/50 text-[11px]">NaOH 10%</span>
+                        <span class="px-2 py-0.5 rounded bg-slate-800 text-blue-300 border border-blue-700/50 text-[11px]">CuSO₄ 5%</span>
+                    </div>
+                </div>
+
+                <!-- Bottom Interactive Action Toolbar -->
+                <div class="relative z-10 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-medium text-slate-400">Trạng thái:</span>
+                        <span id="reaction-state-pill" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                            Chờ bắt đầu
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-2.5">
+                        <button id="prev-step-btn" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition" disabled>
+                            Quay lại bước trước
+                        </button>
+                        <button id="execute-step-btn" class="px-5 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition active:scale-95">
+                            <span id="execute-btn-text">Bước 1: Cho 5mL Tinh bột + 1mL HCl vào Ống 1</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Molecular Insight Panel (Kính hiển vi cơ chế phản ứng) -->
+            <div class="glass-panel p-4 rounded-2xl border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></div>
+                        <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wide">Kính Hiển Vi Cơ Chế Hóa Học & Vi Mô</h3>
+                    </div>
+                    <span class="text-[11px] font-mono text-cyan-400/90" id="micro-title">Trạng thái: Dung dịch keo Tinh bột ban đầu</span>
+                </div>
+                
+                <div id="micro-view" class="h-24 rounded-xl bg-slate-950/80 border border-slate-800/80 p-2.5 flex items-center justify-center relative overflow-hidden">
+                    <div id="molecular-canvas-content" class="w-full flex items-center justify-around text-center text-xs">
+                        <div class="flex flex-col items-center">
+                            <div class="flex items-center gap-1.5 p-1.5 rounded-lg bg-slate-900 border border-slate-700">
+                                <span class="px-2 py-0.5 rounded bg-blue-950 text-blue-200 text-xs font-mono font-bold">Amylose / Amylopectin (C₆H₁₀O₅)ₙ</span>
+                                <span class="text-slate-400 text-xs">(Polysaccharide cấu trúc xoắn)</span>
+                            </div>
+                            <span class="text-[10px] text-amber-300/80 mt-1">Không có nhóm -CHO tự do &bull; Không có tính khử Cu(OH)₂</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column (Cols 9-12): Theory, Observations, and Chemical Equations -->
+        <div class="lg:col-span-4 flex flex-col gap-5">
+            
+            <!-- Scientific Observations & Notebook Card -->
+            <div class="glass-panel p-5 rounded-2xl flex flex-col h-full border border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Quy Trình & Hiện Tượng Chuẩn SGK
+                    </h3>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Hóa 12</span>
+                </div>
+
+                <!-- Step-by-step Log List -->
+                <div class="space-y-2.5 flex-1 overflow-y-auto pr-1 text-xs" id="observation-logs">
+                    
+                    <!-- Log Item 1 -->
+                    <div id="log-item-1" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-slate-200">1. Tạo mẫu ở Ống nghiệm 1</span>
+                            <span class="log-status text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Đang chờ</span>
+                        </div>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">
+                            Cho 5 mL hồ tinh bột 1% (màu trắng mờ đục) + 1 mL HCl 1M (xúc tác acid $H^+$). Lắc đều.
+                        </p>
+                    </div>
+
+                    <!-- Log Item 2 -->
+                    <div id="log-item-2" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 opacity-60 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-slate-200">2. Đun cách thủy Ống 1 (10 phút)</span>
+                            <span class="log-status text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Chưa đạt</span>
+                        </div>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">
+                            Cốc nước nóng ~90°C. Tinh bột thủy phân hoàn toàn thành glucose. Dung dịch chuyển từ mờ đục sang trong suốt. Để nguội.
+                        </p>
+                    </div>
+
+                    <!-- Log Item 3 -->
+                    <div id="log-item-3" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 opacity-60 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-slate-200">3. Trung hòa HCl bằng NaHCO₃</span>
+                            <span class="log-status text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Chưa đạt</span>
+                        </div>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">
+                            Thêm từ từ bột NaHCO₃ rắn $\rightarrow$ sủi mạnh bọt khí CO₂$\uparrow$. Thêm đến khi <strong>ngừng hẳn sủi bọt</strong> để loại bỏ hết acid dư.
+                        </p>
+                    </div>
+
+                    <!-- Log Item 4 -->
+                    <div id="log-item-4" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 opacity-60 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-slate-200">4. Điều chế Cu(OH)₂ tại Ống nghiệm 2</span>
+                            <span class="log-status text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Chưa đạt</span>
+                        </div>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">
+                            Cho 2 mL NaOH 10% + 0,5 mL CuSO₄ 5% vào Ống 2, lắc nhẹ $\rightarrow$ xuất hiện kết tủa bông màu <strong>xanh lam tươi</strong> của Cu(OH)₂.
+                        </p>
+                    </div>
+
+                    <!-- Log Item 5 -->
+                    <div id="log-item-5" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 opacity-60 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-slate-200">5. Chuyển 2 mL dịch từ Ống 1 → Ống 2</span>
+                            <span class="log-status text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Chưa đạt</span>
+                        </div>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">
+                            Lấy 2 mL dung dịch chứa glucose đã trung hòa từ Ống 1 cho vào Ống 2 (chứa Cu(OH)₂). Lắc nhẹ $\rightarrow$ Cu(OH)₂ tan một phần tạo phức xanh thẫm.
+                        </p>
+                    </div>
+
+                    <!-- Log Item 6 -->
+                    <div id="log-item-6" class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 opacity-60 transition-all">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-slate-200">6. Đun cách thủy Ống 2 trong 5 phút</span>
+                            <span class="log-status text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">Chưa đạt</span>
+                        </div>
+                        <p class="text-slate-400 text-[11px] leading-relaxed">
+                            Đặt Ống 2 vào cốc nước nóng. Nhóm aldehyde (-CHO) của glucose khử Cu(II) thành Cu(I) $\rightarrow$ tạo <strong>kết tủa đỏ gạch Cu₂O</strong>.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Chemical Equations Box: equations are revealed only after the corresponding reaction occurs -->
+                <div class="mt-3 pt-3 border-t border-slate-800/80">
+                    <h4 class="text-[11px] font-bold text-slate-300 mb-1.5 uppercase tracking-wide">Phương Trình Hóa Học Bản Chất:</h4>
+                    <div id="equation-placeholder" class="p-3 rounded-xl bg-slate-950/80 border border-dashed border-slate-700 text-[11px] text-slate-400 text-center">
+                        Chưa có phản ứng được ghi nhận – hãy tiến hành thí nghiệm.
+                    </div>
+                    <div id="equation-list" class="hidden p-2.5 rounded-xl bg-slate-950/80 border border-slate-800 space-y-2 font-mono text-[10.5px]">
+                        <div id="eq-hydrolysis" class="hidden text-cyan-300 leading-snug opacity-0 translate-y-2 transition-all duration-500">
+                            <span class="text-slate-400 font-sans block text-[9.5px] font-bold">1. Thủy phân tinh bột (Ống 1):</span>
+                            (C₆H₁₀O₅)ₙ + nH₂O <span class="text-amber-400">→ (H⁺, t°)</span> nC₆H₁₂O₆ (glucose)
+                        </div>
+                        <div id="eq-neutralize" class="hidden text-emerald-300 leading-snug opacity-0 translate-y-2 transition-all duration-500">
+                            <span class="text-slate-400 font-sans block text-[9.5px] font-bold">2. Trung hòa HCl:</span>
+                            HCl + NaHCO₃ → NaCl + CO₂↑ + H₂O
+                        </div>
+                        <div id="eq-cuoh2" class="hidden text-sky-300 leading-snug opacity-0 translate-y-2 transition-all duration-500">
+                            <span class="text-slate-400 font-sans block text-[9.5px] font-bold">3. Tạo Cu(OH)₂ tươi (Ống 2):</span>
+                            CuSO₄ + 2NaOH → Cu(OH)₂↓ + Na₂SO₄
+                        </div>
+                        <div id="eq-redox" class="hidden text-rose-400 leading-snug opacity-0 translate-y-2 transition-all duration-500">
+                            <span class="text-slate-400 font-sans block text-[9.5px] font-bold">4. Khi đun nóng Ống 2:</span>
+                            C₅H₁₁O₅-CHO + 2Cu(OH)₂ + NaOH <span class="text-amber-400">→ (t°)</span> C₅H₁₁O₅-COONa + <strong class="text-amber-400">Cu₂O↓ (đỏ gạch)</strong> + 3H₂O
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deep Scientific Note (Bản chất khoa học) -->
+                <div class="mt-2.5 p-2.5 rounded-xl bg-amber-950/20 border border-amber-900/40 text-[11px] text-amber-200/90 leading-relaxed">
+                    <strong class="text-amber-300">⚠️ Tại sao phải trung hòa trước khi cho vào Ống 2?</strong> Nếu còn acid $\text{HCl}$ dư, khi cho vào Ống 2 thì acid sẽ hòa tan kết tủa $\text{Cu(OH)}_2$ ngay lập tức ($\text{Cu(OH)}_2 + 2\text{HCl} \rightarrow \text{CuCl}_2 + 2\text{H}_2\text{O}$), làm mất kết tủa và phản ứng tráng men đồng không thể xảy ra!
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Interactive Review Quiz -->
+        <section id="quiz-panel" class="col-span-full lg:col-span-12 w-full min-w-0 pb-6 hidden" style="grid-column: 1 / -1; width: 100%;">
+            <div class="glass-panel p-5 rounded-2xl border border-violet-700/40 shadow-xl">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                    <div>
+                        <h3 class="text-base font-bold text-violet-200">🧠 Củng cố sau thí nghiệm – 5 câu trắc nghiệm</h3>
+                        <p class="text-xs text-slate-400 mt-1">Chọn một đáp án cho từng câu. Hệ thống phản hồi ngay và tính điểm cuối bài.</p>
+                    </div>
+                    <div id="quiz-score" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-sm font-bold text-cyan-300">0 / 5</div>
+                </div>
+                <div id="quiz-questions" class="space-y-4"></div>
+                <div class="mt-4 flex flex-wrap gap-2 items-center">
+                    <button id="quiz-submit" class="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold transition">Chấm 5 câu</button>
+                    <button id="quiz-reset" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold transition">Làm lại câu hỏi</button>
+                    <span id="quiz-result" class="text-xs font-semibold text-slate-300"></span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950/80 py-2.5 text-center text-xs text-slate-500">
+        Mô phỏng Thí nghiệm Hóa học 12 theo Chương trình Giáo dục Phổ thông 2018 &bull; Thiết kế chính xác từng thao tác chuyển chất giữa các ống nghiệm.
+    </footer>
+
+    <script>
+        /* Lab Audio Generator */
+        class LabAudio {
+            constructor() {
+                this.enabled = true;
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playPour() {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const bufferSize = this.ctx.sampleRate * 0.7;
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = (Math.random() * 2 - 1) * 0.15;
+                    }
+                    const whiteNoise = this.ctx.createBufferSource();
+                    whiteNoise.buffer = buffer;
+
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(700, now);
+                    filter.frequency.exponentialRampToValueAtTime(1300, now + 0.7);
+                    filter.Q.setValueAtTime(3.0, now);
+
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.01, now);
+                    gain.gain.linearRampToValueAtTime(0.18, now + 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+                    whiteNoise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    whiteNoise.start(now);
+                } catch(e) {}
+            }
+
+            playFizz(duration = 2.5) {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const bufferSize = this.ctx.sampleRate * duration;
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = (Math.random() * 2 - 1) * 0.22;
+                    }
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = buffer;
+
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'highpass';
+                    filter.frequency.setValueAtTime(1900, now);
+
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.01, now);
+                    gain.gain.linearRampToValueAtTime(0.24, now + 0.2);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    noise.start(now);
+                } catch(e) {}
+            }
+
+            playSuccess() {
+                if (!this.enabled) return;
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.35); // G5
+
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                } catch(e) {}
+            }
+        }
+
+        const audio = new LabAudio();
+
+
+        // Progressive equation reveal: never show a reaction before students observe it.
+        function revealEquation(id) {
+            const placeholder = document.getElementById('equation-placeholder');
+            const list = document.getElementById('equation-list');
+            const eq = document.getElementById(id);
+            if (!eq) return;
+            placeholder.classList.add('hidden');
+            list.classList.remove('hidden');
+            eq.classList.remove('hidden');
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                eq.classList.remove('opacity-0', 'translate-y-2');
+                eq.classList.add('opacity-100', 'translate-y-0');
+            }));
+        }
+        function resetEquations() {
+            document.getElementById('equation-placeholder').classList.remove('hidden');
+            document.getElementById('equation-list').classList.add('hidden');
+            ['eq-hydrolysis','eq-neutralize','eq-cuoh2','eq-redox'].forEach(id => {
+                const el=document.getElementById(id); if(!el) return;
+                el.classList.add('hidden','opacity-0','translate-y-2');
+                el.classList.remove('opacity-100','translate-y-0');
+            });
+        }
+
+        // Animate the same test tube between rack and water bath; original is hidden while moving.
+        function animateTubeToBath(apparatusId, liquidColor, onArrive) {
+            const apparatus=document.getElementById(apparatusId);
+            const bath=document.querySelector('#submerged-tube-ghost').parentElement;
+            const a=apparatus.getBoundingClientRect(), b=bath.getBoundingClientRect();
+            const clone=apparatus.cloneNode(true); clone.removeAttribute('id');
+            clone.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));
+            Object.assign(clone.style,{position:'fixed',left:a.left+'px',top:a.top+'px',width:a.width+'px',height:a.height+'px',zIndex:'9999',margin:'0',transition:'left .65s ease, top .65s ease, transform .65s ease, opacity .2s'});
+            document.body.appendChild(clone); apparatus.style.visibility='hidden';
+            requestAnimationFrame(()=>{ clone.style.left=(b.left+b.width/2-a.width/2)+'px'; clone.style.top=(b.top+10)+'px'; clone.style.transform='scale(.88)'; });
+            setTimeout(()=>{ clone.remove(); submergedTubeGhost.style.opacity='1'; submergedTubeGhost.style.transform='translateY(0px)'; submergedLiquid.style.background=liquidColor; if(onArrive)onArrive(); },720);
+        }
+        function animateTubeBackFromBath(apparatusId, liquidColor, onDone) {
+            const apparatus=document.getElementById(apparatusId), bath=document.querySelector('#submerged-tube-ghost').parentElement;
+            const a=apparatus.getBoundingClientRect(), b=bath.getBoundingClientRect();
+            submergedTubeGhost.style.opacity='0';
+            const clone=apparatus.cloneNode(true); clone.removeAttribute('id'); clone.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));
+            Object.assign(clone.style,{position:'fixed',left:(b.left+b.width/2-a.width/2)+'px',top:(b.top+10)+'px',width:a.width+'px',height:a.height+'px',zIndex:'9999',margin:'0',transform:'scale(.88)',transition:'left .65s ease, top .65s ease, transform .65s ease'});
+            const liq=clone.querySelector('[style*="height"]');
+            document.body.appendChild(clone);
+            requestAnimationFrame(()=>{clone.style.left=a.left+'px';clone.style.top=a.top+'px';clone.style.transform='scale(1)';});
+            setTimeout(()=>{clone.remove();apparatus.style.visibility='visible';if(onDone)onDone();},720);
+        }
+
+        function animateNaHCO3Addition(done) {
+            const tube=document.getElementById('tube-1-apparatus');
+            const target=tube.getBoundingClientRect();
+            const mouthX=target.left + target.width/2;
+            const mouthY=target.top + 5;
+            const spoon=document.createElement('div');
+            spoon.innerHTML='<div style="width:44px;height:18px;border-radius:50%;background:#e2e8f0;box-shadow:0 0 8px #fff;position:relative"><div style="position:absolute;left:7px;top:3px;width:30px;height:10px;border-radius:50%;background:white"></div></div><div style="width:90px;height:5px;background:#94a3b8;position:absolute;left:38px;top:7px;border-radius:4px"></div>';
+            Object.assign(spoon.style,{position:'fixed',left:(mouthX-170)+'px',top:(mouthY-70)+'px',zIndex:'10000',width:'130px',height:'30px',transformOrigin:'22px 10px',transition:'left .75s ease, top .75s ease, transform .45s ease'});
+            document.body.appendChild(spoon);
+            requestAnimationFrame(()=>{spoon.style.left=(mouthX-20)+'px';spoon.style.top=(mouthY-34)+'px';});
+            setTimeout(()=>{
+                spoon.style.transform='rotate(-58deg)';
+                for(let i=0;i<22;i++){
+                    const g=document.createElement('i');
+                    Object.assign(g.style,{position:'fixed',left:(mouthX-4+Math.random()*8)+'px',top:(mouthY+2)+'px',width:'3px',height:'3px',borderRadius:'50%',background:'white',zIndex:'10001',transition:'top .55s ease, opacity .55s'});
+                    document.body.appendChild(g);
+                    requestAnimationFrame(()=>{g.style.top=(mouthY+115+Math.random()*18)+'px';g.style.opacity='.15'});
+                    setTimeout(()=>g.remove(),650);
+                }
+                setTimeout(()=>{spoon.remove();if(done)done();},700);
+            },820);
+        }
+
+        // Total 6 discrete logical steps
+        const ExperimentState = {
+            step: 1, // 1 to 6
+            isBusy: false
+        };
+
+        // DOM elements
+        const liquidTube1 = document.getElementById('liquid-tube-1');
+        const liquidTube2 = document.getElementById('liquid-tube-2');
+        const bubblesContainer1 = document.getElementById('bubbles-container-1');
+        const powderSediment1 = document.getElementById('powder-sediment-1');
+        const submergedTubeGhost = document.getElementById('submerged-tube-ghost');
+        const submergedLiquid = document.getElementById('submerged-liquid');
+        const steamContainer = document.getElementById('steam-container');
+        const heatCoil = document.getElementById('heat-coil');
+        const stoveLight = document.getElementById('stove-light');
+        const stoveTempLabel = document.getElementById('stove-temp-label');
+        const precipitateCloud2 = document.getElementById('precipitate-cloud-2');
+        const sedimentLayer2 = document.getElementById('sediment-layer-2');
+        const transferPipette = document.getElementById('transfer-pipette');
+        const pipetteDrop = document.getElementById('pipette-drop');
+        const pipetteLiquid = document.getElementById('pipette-liquid');
+        
+        const bannerTitle = document.getElementById('banner-title');
+        const bannerDesc = document.getElementById('banner-desc');
+        const stepTag = document.getElementById('step-tag');
+        const executeBtn = document.getElementById('execute-step-btn');
+        const executeBtnText = document.getElementById('execute-btn-text');
+        const prevStepBtn = document.getElementById('prev-step-btn');
+        const resetLabBtn = document.getElementById('reset-lab-btn');
+        const reactionStatePill = document.getElementById('reaction-state-pill');
+        const microTitle = document.getElementById('micro-title');
+        const microViewContent = document.getElementById('molecular-canvas-content');
+        
+        const tube1Label = document.getElementById('tube-1-label');
+        const tube1Desc = document.getElementById('tube-1-desc');
+        const tube2Label = document.getElementById('tube-2-label');
+        const tube2Desc = document.getElementById('tube-2-desc');
+        const toggleSoundBtn = document.getElementById('toggle-sound-btn');
+        const soundStatusLabel = document.getElementById('sound-status-label');
+
+        toggleSoundBtn.addEventListener('click', () => {
+            audio.enabled = !audio.enabled;
+            soundStatusLabel.textContent = audio.enabled ? 'Âm thanh: Bật' : 'Âm thanh: Tắt';
+            toggleSoundBtn.classList.toggle('opacity-70', !audio.enabled);
+        });
+
+        // Generate effervescent bubbles for Step 3
+        function triggerBubbles(container, count = 30, duration = 3000) {
+            container.innerHTML = '';
+            const interval = setInterval(() => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 5 + 3;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 80 + 10}%`;
+                bubble.style.bottom = '4px';
+                bubble.style.animationDuration = `${Math.random() * 0.7 + 0.6}s`;
+                container.appendChild(bubble);
+
+                setTimeout(() => {
+                    bubble.remove();
+                }, 1300);
+            }, 75);
+
+            setTimeout(() => {
+                clearInterval(interval);
+            }, duration);
+        }
+
+        // Update progress chips and logs
+        function updateStepUI(current) {
+            stepTag.textContent = `Bước ${current} / 6`;
+            for (let i = 1; i <= 6; i++) {
+                const chip = document.getElementById(`chip-${i}`);
+                const log = document.getElementById(`log-item-${i}`);
+                const logStatus = log ? log.querySelector('.log-status') : null;
+
+                if (i < current) {
+                    if (chip) chip.className = 'step-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-emerald-500/50 bg-emerald-950/40 text-emerald-300 text-xs font-medium whitespace-nowrap transition-all duration-300';
+                    if (log) {
+                        log.classList.remove('opacity-60');
+                        log.classList.add('border-emerald-500/40');
+                        if (logStatus) {
+                            logStatus.textContent = 'Đã xong ✓';
+                            logStatus.className = 'log-status text-[10px] px-1.5 py-0.5 rounded bg-emerald-900/70 text-emerald-300 font-semibold';
+                        }
+                    }
+                } else if (i === current) {
+                    if (chip) chip.className = 'step-chip active flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-cyan-400 bg-cyan-950 text-cyan-200 text-xs font-semibold whitespace-nowrap transition-all duration-300 ring-2 ring-cyan-500/30';
+                    if (log) {
+                        log.classList.remove('opacity-60');
+                        log.classList.add('border-cyan-500/40');
+                        if (logStatus) {
+                            logStatus.textContent = 'Đang thực hiện';
+                            logStatus.className = 'log-status text-[10px] px-1.5 py-0.5 rounded bg-cyan-900/80 text-cyan-300 font-semibold';
+                        }
+                    }
+                } else {
+                    if (chip) chip.className = 'step-chip flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-800 text-slate-400 text-xs font-medium whitespace-nowrap transition-all duration-300';
+                    if (log) {
+                        log.classList.add('opacity-60');
+                        log.classList.remove('border-cyan-500/40', 'border-emerald-500/40');
+                        if (logStatus) {
+                            logStatus.textContent = 'Chưa đạt';
+                            logStatus.className = 'log-status text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400';
+                        }
+                    }
+                }
+            }
+            prevStepBtn.disabled = current <= 1 || ExperimentState.isBusy;
+        }
+
+        /* ---------------- STEP 1: PREPARE STARCH + HCL IN TUBE 1 ---------------- */
+        function runStep1() {
+            ExperimentState.isBusy = true;
+            executeBtn.disabled = true;
+            reactionStatePill.textContent = "Đang rót 5 mL Tinh bột 1% & 1 mL HCl vào Ống 1...";
+            reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-cyan-950 text-cyan-300 border border-cyan-700 animate-pulse";
+            
+            audio.playPour();
+
+            // Animate liquid column in Tube 1
+            liquidTube1.style.height = '48%';
+            liquidTube1.style.background = 'rgba(241, 245, 249, 0.55)'; // milky white colloidal starch
+            liquidTube1.style.boxShadow = 'inset 0 0 10px rgba(255,255,255,0.4)';
+
+            setTimeout(() => {
+                tube1Label.textContent = "5mL Tinh bột + 1mL HCl";
+                tube1Label.className = "text-[11px] text-cyan-300 font-semibold block";
+                tube1Desc.textContent = "Hỗn hợp hơi đục mờ ban đầu";
+
+                reactionStatePill.textContent = "Ống 1 đã sẵn sàng để đun cách thủy";
+                reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-800 text-emerald-300 border border-emerald-700";
+
+                microTitle.textContent = "Vi mô: Các ion H⁺ bám quanh mạch polymer amylose/amylopectin";
+                microViewContent.innerHTML = `
+                    <div class="flex items-center gap-3 text-xs">
+                        <div class="p-1.5 rounded-lg bg-slate-900 border border-slate-700 text-center">
+                            <span class="text-blue-300 font-bold block">(C₆H₁₀O₅)ₙ Tinh bột</span>
+                            <span class="text-[10px] text-slate-400">Hỗn hợp keo mờ đục</span>
+                        </div>
+                        <span class="text-cyan-400 font-bold text-base">+</span>
+                        <div class="p-1.5 rounded-lg bg-rose-950/60 border border-rose-800 text-center">
+                            <span class="text-rose-300 font-bold block">H⁺ (từ HCl 1M)</span>
+                            <span class="text-[10px] text-slate-400">Xúc tác thủy phân</span>
+                        </div>
+                    </div>
+                `;
+
+                ExperimentState.step = 2;
+                updateStepUI(2);
+                bannerTitle.textContent = "Đun cách thuỷ Ống nghiệm 1 trong cốc nước nóng";
+                bannerDesc.textContent = "Đặt Ống nghiệm 1 vào cốc chứa nước nóng trên bếp điện, đun cách thuỷ trong 10 phút để thủy phân hoàn toàn tinh bột thành glucose. Sau đó để nguội.";
+                executeBtnText.textContent = "Bước 2: Đặt Ống 1 vào cốc & Đun cách thủy 10 phút";
+                executeBtn.disabled = false;
+                ExperimentState.isBusy = false;
+                audio.playSuccess();
+            }, 1200);
+        }
+
+        /* ---------------- STEP 2: WATER BATH HEATING TUBE 1 (10 MINS) ---------------- */
+        function runStep2() {
+            ExperimentState.isBusy = true;
+            executeBtn.disabled = true;
+            reactionStatePill.textContent = "Đang đun cách thủy Ống 1 trong 10 phút (~90°C)...";
+            reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-950 text-amber-300 border border-amber-700 animate-pulse";
+
+            // Stove turned on
+            heatCoil.className = "w-24 h-2.5 rounded-full bg-rose-600 heat-active";
+            stoveLight.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-md shadow-rose-500/80";
+            stoveTempLabel.textContent = "Bếp: Bật (~90°C)";
+            stoveTempLabel.className = "text-[11px] text-amber-400 mt-1 font-mono font-semibold";
+            steamContainer.style.opacity = '1';
+
+            // Physically move Tube 1 from its rack into the water bath.
+            animateTubeToBath('tube-1-apparatus', 'rgba(241, 245, 249, 0.45)');
+            audio.playPour();
+
+            // Heating progress timer simulation
+            let progress = 0;
+            const heatTimer = setInterval(() => {
+                progress += 25;
+                if (progress >= 100) {
+                    clearInterval(heatTimer);
+                    
+                    // Hydrolysis completes: solution becomes clear transparent!
+                    submergedLiquid.style.background = 'rgba(224, 242, 254, 0.2)'; 
+                    liquidTube1.style.background = 'rgba(224, 242, 254, 0.25)'; // Crystal clear glucose solution
+
+                    setTimeout(() => {
+                        // Lift the SAME Tube 1 visibly back from the bath to its rack.
+                        animateTubeBackFromBath('tube-1-apparatus', 'rgba(224, 242, 254, 0.25)', () => {});
+                        submergedTubeGhost.style.transform = 'translateY(32px)';
+                        liquidTube1.style.opacity = '1';
+                        steamContainer.style.opacity = '0.2';
+                        heatCoil.className = "w-24 h-2.5 rounded-full bg-slate-600";
+                        stoveLight.className = "w-2.5 h-2.5 rounded-full bg-rose-950 border border-rose-800";
+                        stoveTempLabel.textContent = "Bếp: Đã tắt (Nước vẫn ấm)";
+                        stoveTempLabel.className = "text-[11px] text-slate-400 mt-1 font-mono";
+
+                        tube1Label.textContent = "Dung dịch Glucose + HCl dư";
+                        tube1Label.className = "text-[11px] text-emerald-300 font-semibold block";
+                        tube1Desc.textContent = "Dung dịch trong suốt (Đã để nguội)";
+
+                        revealEquation("eq-hydrolysis");
+                         reactionStatePill.textContent = "Thủy phân xong - Tinh bột đã chuyển thành Glucose";
+                        reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-800 text-emerald-300 border border-emerald-700";
+
+                        microTitle.textContent = "Vi mô: Liên kết glycosidic bị bẻ gãy tạo ra n phân tử Glucose tự do";
+                        microViewContent.innerHTML = `
+                            <div class="p-1.5 rounded-lg bg-emerald-950/60 border border-emerald-700 text-center">
+                                <span class="text-emerald-300 font-bold block">n Phân tử Glucose (C₆H₁₂O₆)</span>
+                                <span class="text-[10px] text-slate-300 font-mono">Đã hình thành nhóm aldehyde khử tự do (-CHO)</span>
+                            </div>
+                        `;
+
+                        ExperimentState.step = 3;
+                        updateStepUI(3);
+                        bannerTitle.textContent = "Trung hòa HCl dư bằng NaHCO₃ rắn";
+                        bannerDesc.textContent = "Thêm từ từ bột NaHCO₃ rắn vào Ống nghiệm 1 cho đến khi ngừng hẳn sủi bọt khí CO₂. Bước này bắt buộc để acid không phá hủy kết tủa Cu(OH)₂.";
+                        executeBtnText.textContent = "Bước 3: Cho NaHCO₃ rắn vào Ống 1 & Quan sát sủi bọt khí";
+                        executeBtn.disabled = false;
+                        ExperimentState.isBusy = false;
+                        audio.playSuccess();
+                    }, 1000);
+                }
+            }, 600);
+        }
+
+        /* ---------------- STEP 3: NEUTRALIZE WITH NAHCO3 (EFFERVESCENCE) ---------------- */
+        function runStep3() {
+            ExperimentState.isBusy = true;
+            executeBtn.disabled = true;
+            reactionStatePill.textContent = "Đang sủi bọt khí CO₂ mạnh mẽ (Trung hòa acid)...";
+            reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-950 text-amber-200 border border-amber-700 animate-pulse";
+
+            reactionStatePill.textContent = "Đang đưa thìa NaHCO₃ đến Ống nghiệm 1...";
+            animateNaHCO3Addition(() => {
+                powderSediment1.style.opacity = '1';
+                reactionStatePill.textContent = "NaHCO₃ đã chạm dung dịch – đang sủi bọt CO₂...";
+                audio.playFizz(2.8);
+                triggerBubbles(bubblesContainer1, 35, 2700);
+                revealEquation('eq-neutralize');
+            });
+
+            setTimeout(() => {
+                powderSediment1.style.opacity = '0.3';
+                tube1Label.textContent = "Dung dịch Glucose (Đã trung hòa)";
+                tube1Label.className = "text-[11px] text-emerald-400 font-bold block";
+                tube1Desc.textContent = "Môi trường trung tính / kiềm nhẹ";
+
+                reactionStatePill.textContent = "Đã dứt hẳn sủi bọt khí (Trung hòa hoàn tất)";
+                reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-800 text-emerald-300 border border-emerald-700";
+
+                microTitle.textContent = "Vi mô: Acid HCl đã được chuyển hóa hết thành muối vô hại NaCl và CO₂ thoát ra";
+                microViewContent.innerHTML = `
+                    <div class="flex items-center gap-2 text-xs">
+                        <div class="p-1 rounded-lg bg-slate-900 border border-slate-700 text-center">
+                            <span class="text-amber-300 font-bold block font-mono">CO₂ ↑</span>
+                            <span class="text-[9px] text-slate-400">Bọt khí bay lên</span>
+                        </div>
+                        <span class="text-slate-500 font-bold">+</span>
+                        <div class="p-1 rounded-lg bg-slate-900 border border-slate-700 text-center">
+                            <span class="text-slate-300 font-bold block font-mono">NaCl + H₂O</span>
+                            <span class="text-[9px] text-slate-400">Môi trường an toàn</span>
+                        </div>
+                    </div>
+                `;
+
+                ExperimentState.step = 4;
+                updateStepUI(4);
+                bannerTitle.textContent = "Chuẩn bị thuốc thử Cu(OH)₂ tại Ống nghiệm 2";
+                bannerDesc.textContent = "Chuyển sang Ống nghiệm 2: Cho 2 mL dung dịch NaOH 10%, sau đó nhỏ 0,5 mL dung dịch CuSO₄ 5% vào và lắc nhẹ để tạo kết tủa xanh lam của Cu(OH)₂.";
+                executeBtnText.textContent = "Bước 4: Cho NaOH & CuSO₄ vào Ống 2 (Tạo Cu(OH)₂)";
+                executeBtn.disabled = false;
+                ExperimentState.isBusy = false;
+                audio.playSuccess();
+            }, 2900);
+        }
+
+        /* ---------------- STEP 4: PREPARE CU(OH)2 IN TUBE 2 ---------------- */
+        function runStep4() {
+            ExperimentState.isBusy = true;
+            executeBtn.disabled = true;
+            reactionStatePill.textContent = "Đang nhỏ NaOH 10% & CuSO₄ 5% vào Ống nghiệm 2...";
+            reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-950 text-sky-300 border border-sky-700 animate-pulse";
+
+            audio.playPour();
+
+            // Animate Tube 2 filling with fresh gelatinous Cu(OH)2 precipitate
+            liquidTube2.style.height = '34%';
+            liquidTube2.style.background = 'rgba(14, 165, 233, 0.85)'; // Fresh bright cyan blue
+            precipitateCloud2.style.opacity = '1';
+            sedimentLayer2.style.background = '#0284C7'; // Blue hydroxide precipitate sediment
+            revealEquation('eq-cuoh2');
+
+            setTimeout(() => {
+                tube2Label.textContent = "Cu(OH)₂ kết tủa xanh lam";
+                tube2Label.className = "text-[11px] text-sky-400 font-bold block";
+                tube2Desc.textContent = "Tươi xốp trong môi trường kiềm dư";
+
+                reactionStatePill.textContent = "Ống 2 đã có sẵn Cu(OH)₂ tươi trong môi trường kiềm";
+                reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-800 text-sky-300 border border-sky-700";
+
+                microTitle.textContent = "Vi mô: Các ion Cu²⁺ phản ứng với OH⁻ tạo mạng lưới hydroxide dạng keo";
+                microViewContent.innerHTML = `
+                    <div class="p-1.5 rounded-lg bg-sky-950/70 border border-sky-700 text-center text-xs">
+                        <span class="text-sky-300 font-bold block font-mono">Cu²⁺ + 2OH⁻ → Cu(OH)₂ ↓ (kết tủa xanh lam)</span>
+                        <span class="text-[10px] text-slate-300">Thuốc thử sẵn sàng để nhận biết dung dịch glucose</span>
+                    </div>
+                `;
+
+                ExperimentState.step = 5;
+                updateStepUI(5);
+                bannerTitle.textContent = "Chuyển 2 mL dung dịch thu được từ Ống 1 sang Ống 2";
+                bannerDesc.textContent = "Dùng ống hút lấy khoảng 2 mL dung dịch glucose đã trung hòa từ Ống nghiệm 1 cho vào Ống nghiệm 2 chứa Cu(OH)₂, sau đó lắc nhẹ.";
+                executeBtnText.textContent = "Bước 5: Hút 2 mL từ Ống 1 rót sang Ống 2 chứa Cu(OH)₂";
+                executeBtn.disabled = false;
+                ExperimentState.isBusy = false;
+                audio.playSuccess();
+            }, 1200);
+        }
+
+        /* ---------------- STEP 5: TRANSFER 2ML FROM TUBE 1 TO TUBE 2 ---------------- */
+        function runStep5() {
+            ExperimentState.isBusy = true;
+            executeBtn.disabled = true;
+            reactionStatePill.textContent = "Đang đưa ống nhỏ giọt vào Ống 1 để hút 2 mL dung dịch...";
+            reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-indigo-950 text-indigo-300 border border-indigo-700 animate-pulse";
+
+            const t1=document.getElementById('tube-1-apparatus').getBoundingClientRect();
+            const t2=document.getElementById('tube-2-apparatus').getBoundingClientRect();
+            const dropper=document.createElement('div');
+            dropper.innerHTML='<div style="width:18px;height:34px;border-radius:12px 12px 5px 5px;background:#475569;border:2px solid #94a3b8;margin:auto"></div><div style="width:10px;height:90px;border:2px solid rgba(203,213,225,.9);border-radius:5px 5px 8px 8px;margin:-2px auto 0;background:rgba(255,255,255,.10);position:relative;overflow:hidden"><div id="real-pipette-liquid" style="position:absolute;left:1px;right:1px;bottom:1px;height:0;background:rgba(226,232,240,.32);box-shadow:inset 0 0 4px rgba(255,255,255,.75);border-top:1px solid rgba(255,255,255,.85);transition:height .55s"></div></div><div style="width:3px;height:22px;background:#cbd5e1;margin:-1px auto 0;border-radius:0 0 3px 3px"></div>';
+            Object.assign(dropper.style,{position:'fixed',left:(t1.left+t1.width/2-9)+'px',top:(t1.top-145)+'px',zIndex:'10020',width:'18px',height:'146px',transition:'left .8s ease, top .65s ease, transform .35s ease'});
+            document.body.appendChild(dropper);
+            const pL=dropper.querySelector('#real-pipette-liquid');
+
+            // Lower tip through the mouth into the actual liquid in Tube 1.
+            requestAnimationFrame(()=>{dropper.style.top=(t1.top-18)+'px';});
+            setTimeout(()=>{
+                reactionStatePill.textContent='Đầu ống nhỏ giọt đã vào dung dịch – đang hút 2 mL...';
+                audio.playPour(); pL.style.height='54px'; liquidTube1.style.height='32%';
+                setTimeout(()=>{
+                    // Lift clear of Tube 1, then travel above Tube 2.
+                    dropper.style.top=(t1.top-145)+'px';
+                    setTimeout(()=>{
+                        dropper.style.left=(t2.left+t2.width/2-9)+'px';
+                        setTimeout(()=>{
+                            // Lower the tip to the mouth of Tube 2 before dispensing.
+                            reactionStatePill.textContent='Đưa ống nhỏ giọt vào đúng miệng Ống 2...';
+                            dropper.style.top=(t2.top-20)+'px';
+                            setTimeout(()=>{
+                                reactionStatePill.textContent='Đang nhỏ dung dịch từ Ống 1 vào Ống 2...';
+                                audio.playPour(); pL.style.height='0px';
+                                // visible droplets travel from the tip down inside Tube 2
+                                for(let i=0;i<7;i++) setTimeout(()=>{
+                                    const d=document.createElement('i');
+                                    Object.assign(d.style,{position:'fixed',left:(t2.left+t2.width/2-3)+'px',top:(t2.top+112)+'px',width:'6px',height:'9px',borderRadius:'50% 50% 60% 60%',background:'rgba(226,232,240,.55)',border:'1px solid rgba(148,163,184,.75)',boxShadow:'0 0 3px rgba(255,255,255,.9)',zIndex:'10021',transition:'top .35s ease, opacity .35s'});
+                                    document.body.appendChild(d); requestAnimationFrame(()=>{d.style.top=(t2.top+175)+'px';d.style.opacity='.25'}); setTimeout(()=>d.remove(),420);
+                                },i*100);
+                                setTimeout(()=>{
+                                    liquidTube2.style.height='48%';
+                                    liquidTube2.style.background='rgba(30, 58, 138, 0.95)';
+                                    sedimentLayer2.style.background='#1E3A8A';
+                                    dropper.style.top=(t2.top-145)+'px';
+                                    setTimeout(()=>dropper.remove(),500);
+                                    tube2Label.textContent='Hỗn hợp Glucose + Cu(OH)₂';
+                                    tube2Label.className='text-[11px] text-indigo-300 font-bold block';
+                                    tube2Desc.textContent='Dung dịch xanh thẫm (Phức đồng-glucose)';
+                                    reactionStatePill.textContent='Đã chuyển 2 mL sang Ống 2 – sẵn sàng đun cách thủy';
+                                    reactionStatePill.className='px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-800 text-emerald-300 border border-emerald-700';
+                                    ExperimentState.step=6; updateStepUI(6);
+                                    bannerTitle.textContent='Đun cách thủy Ống nghiệm 2 trong cốc nước nóng 5 phút';
+                                    bannerDesc.textContent='Đặt Ống nghiệm 2 vào cốc thủy tinh chứa nước nóng khoảng 5 phút. Quan sát sự chuyển màu và kết tủa đỏ gạch Cu₂O.';
+                                    executeBtnText.textContent='Bước 6: Đặt Ống 2 vào cốc nước nóng & Quan sát kết tủa đỏ gạch';
+                                    executeBtn.disabled=false; ExperimentState.isBusy=false; audio.playSuccess();
+                                },850);
+                            },650);
+                        },850);
+                    },650);
+                },750);
+            },700);
+        }
+
+        /* ---------------- STEP 6: WATER BATH HEATING TUBE 2 -> BRICK RED CU2O ---------------- */
+        function runStep6() {
+            ExperimentState.isBusy = true;
+            executeBtn.disabled = true;
+            reactionStatePill.textContent = "Đang đun cách thủy Ống 2 trong cốc nước nóng 5 phút...";
+            reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-950 text-amber-300 border border-amber-700 animate-pulse";
+
+            // Stove on for hot bath
+            heatCoil.className = "w-24 h-2.5 rounded-full bg-rose-600 heat-active";
+            stoveLight.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shadow-md shadow-rose-500/80";
+            stoveTempLabel.textContent = "Bếp: Bật cách thủy (~90°C)";
+            stoveTempLabel.className = "text-[11px] text-amber-400 mt-1 font-mono font-semibold";
+            steamContainer.style.opacity = '1';
+
+            // Physically move Tube 2 from its rack into the hot-water bath.
+            animateTubeToBath('tube-2-apparatus', 'rgba(30, 58, 138, 0.95)');
+
+            audio.playPour();
+
+            // Heating observation: keep the blue mixture visible for a few seconds first.
+            // This lets students perceive that heating precedes the brick-red precipitate.
+            reactionStatePill.textContent = "Ống 2 đang được đun nóng... tiếp tục quan sát hiện tượng.";
+            submergedLiquid.style.transition = 'background 1.6s ease, box-shadow 1.6s ease';
+            liquidTube2.style.transition = 'background 1.6s ease, box-shadow 1.6s ease';
+
+            setTimeout(() => {
+                reactionStatePill.textContent = "Sau khi đun nóng: kết tủa đỏ gạch Cu₂O bắt đầu xuất hiện...";
+                submergedLiquid.style.background = 'linear-gradient(to top, #7C2D12 0%, #C2410C 42%, rgba(234,88,12,0.78) 70%, rgba(30,58,138,0.72) 100%)';
+                liquidTube2.style.background = 'linear-gradient(to top, #7C2D12 0%, #C2410C 42%, rgba(234,88,12,0.78) 70%, rgba(30,58,138,0.72) 100%)';
+                sedimentLayer2.style.background = '#7C2D12';
+
+                setTimeout(() => {
+                    // Final: brick-red Cu2O is now clearly visible. Equation appears only now.
+                    submergedLiquid.style.background = 'linear-gradient(to top, #7C2D12 0%, #C2410C 58%, #EA580C 100%)';
+                    liquidTube2.style.background = 'linear-gradient(to top, #7C2D12 0%, #C2410C 58%, #EA580C 100%)';
+                    revealEquation('eq-redox');
+
+                    setTimeout(() => {
+                        // Lift Tube 2 back and cool down
+                        submergedTubeGhost.style.opacity = '0';
+                        submergedTubeGhost.style.transform = 'translateY(32px)';
+                        liquidTube2.style.opacity = '1';
+                        steamContainer.style.opacity = '0.2';
+                        heatCoil.className = "w-24 h-2.5 rounded-full bg-slate-600";
+                        stoveLight.className = "w-2.5 h-2.5 rounded-full bg-rose-950 border border-rose-800";
+                        stoveTempLabel.textContent = "Bếp: Đã tắt";
+                        stoveTempLabel.className = "text-[11px] text-slate-400 mt-1 font-mono";
+
+                        tube2Label.textContent = "Kết tủa Cu₂O đỏ gạch";
+                        tube2Label.className = "text-[11px] text-rose-400 font-bold block";
+                        tube2Desc.textContent = "Lắng tụ ở đáy ống nghiệm";
+
+                        reactionStatePill.textContent = "Thành công: Xuất hiện kết tủa Cu₂O màu đỏ gạch!";
+                        reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-950 text-rose-300 border border-rose-700 shadow-md";
+
+                        microTitle.textContent = "Vi mô: Nhóm Aldehyde (-CHO) khử ion Cu²⁺ thành Cu⁺ (Cu₂O kết tủa đỏ gạch)";
+                        microViewContent.innerHTML = `
+                            <div class="flex items-center gap-3 text-xs">
+                                <div class="p-1 rounded-lg bg-slate-900 border border-slate-700 text-center">
+                                    <span class="text-amber-300 font-bold block">R-CHO (Glucose)</span>
+                                    <span class="text-[9px] text-slate-400">Bị oxy hóa thành -COONa</span>
+                                </div>
+                                <span class="text-rose-400 font-bold text-base">→</span>
+                                <div class="p-1.5 rounded-lg bg-rose-950/80 border border-rose-600 text-center">
+                                    <span class="text-rose-300 font-mono font-bold block">Cu₂O ↓ (Màu đỏ gạch)</span>
+                                    <span class="text-[9px] text-slate-300">Minh chứng tinh bột đã thủy phân ra Glucose!</span>
+                                </div>
+                            </div>
+                        `;
+
+                        bannerTitle.textContent = "🎉 Thí nghiệm thành công rực rỡ!";
+                        bannerDesc.textContent = "Sự xuất hiện của kết tủa đỏ gạch (Cu₂O) chứng minh tinh bột đã bị thủy phân hoàn toàn trong môi trường acid thành glucose, và glucose mang nhóm chức aldehyde có tính khử Cu(OH)₂ khi đun nóng.";
+                        executeBtnText.textContent = "Thực hiện lại thí nghiệm từ đầu";
+                        executeBtn.disabled = false;
+                        ExperimentState.isBusy = false;
+                        ExperimentState.step = 7; // Completed
+                        updateStepUI(7);
+                        quizPanel.classList.remove('hidden');
+                        quizPanel.scrollIntoView({behavior:'smooth', block:'start'});
+                        audio.playSuccess();
+                    }, 1200);
+
+                }, 1600);
+
+            }, 3200);
+        }
+
+        // ---------------- INTERACTIVE REVIEW QUIZ V4 ----------------
+        const quizData = [
+            {q:'Vai trò của HCl trong bước thủy phân tinh bột là gì?', a:['Tạo kết tủa','Xúc tác acid cho phản ứng thủy phân','Làm glucose mất tính khử','Tạo Cu(OH)₂'], c:1, e:'H⁺ từ HCl xúc tác quá trình thủy phân tinh bột.'},
+            {q:'Sau khi đun cách thủy Ống 1, sản phẩm hữu cơ chính được mô phỏng là chất nào?', a:['Saccharose','Glucose','Ethanol','Acetic acid'], c:1, e:'Tinh bột bị thủy phân tạo glucose.'},
+            {q:'Vì sao cần thêm NaHCO₃ vào Ống 1 trước khi chuyển dung dịch sang Ống 2?', a:['Để tạo màu đỏ gạch ngay','Để trung hòa HCl dư','Để tạo thêm tinh bột','Để hòa tan glucose'], c:1, e:'NaHCO₃ trung hòa HCl dư; acid dư có thể làm Cu(OH)₂ bị hòa tan.'},
+            {q:'Hiện tượng khi tạo Cu(OH)₂ tươi trong Ống 2 là gì?', a:['Xuất hiện kết tủa xanh lam','Có khí không màu thoát ra','Xuất hiện kết tủa đỏ gạch','Dung dịch mất màu hoàn toàn'], c:0, e:'CuSO₄ tác dụng với NaOH tạo kết tủa Cu(OH)₂ màu xanh lam.'},
+            {q:'Khi đun nóng Ống 2, hiện tượng nào chứng tỏ glucose có tính khử?', a:['Có khí CO₂ thoát ra','Xuất hiện kết tủa Cu₂O đỏ gạch','Xuất hiện kết tủa trắng','Dung dịch chuyển màu tím'], c:1, e:'Glucose khử Cu(II) thành Cu(I), tạo Cu₂O kết tủa đỏ gạch.'}
+        ];
+        const quizPanel = document.getElementById('quiz-panel');
+        const quizQuestions = document.getElementById('quiz-questions');
+        const quizScore = document.getElementById('quiz-score');
+        const quizResult = document.getElementById('quiz-result');
+        const quizSubmit = document.getElementById('quiz-submit');
+        const quizReset = document.getElementById('quiz-reset');
+
+        function renderQuiz() {
+            if (!quizQuestions) return;
+            quizQuestions.innerHTML = '';
+            quizData.forEach((item, i) => {
+                const card = document.createElement('div');
+                card.className = 'quiz-item w-full min-w-0 p-4 rounded-xl bg-slate-950/60 border border-slate-800';
+                card.dataset.q = i;
+                const title = document.createElement('p');
+                title.className = 'text-sm font-semibold text-slate-200 mb-2';
+                title.textContent = `Câu ${i + 1}. ${item.q}`;
+                card.appendChild(title);
+                const choices = document.createElement('div');
+                choices.className = 'grid grid-cols-1 xl:grid-cols-2 gap-2';
+                item.a.forEach((text, j) => {
+                    const label = document.createElement('label');
+                    label.className = 'quiz-option cursor-pointer px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-slate-300 hover:border-cyan-600 transition flex items-start gap-2';
+                    const radio = document.createElement('input');
+                    radio.type = 'radio'; radio.name = `q${i}`; radio.value = String(j);
+                    radio.className = 'mt-0.5 accent-cyan-500 shrink-0';
+                    const span = document.createElement('span');
+                    span.textContent = `${String.fromCharCode(65 + j)}. ${text}`;
+                    radio.addEventListener('change', () => giveImmediateFeedback(i));
+                    label.append(radio, span); choices.appendChild(label);
+                });
+                card.appendChild(choices);
+                const fb = document.createElement('div');
+                fb.className = 'quiz-feedback hidden mt-2 text-[11px] rounded-lg px-2.5 py-2';
+                card.appendChild(fb); quizQuestions.appendChild(card);
+            });
+            if (quizScore) quizScore.textContent = '0 / 5';
+            if (quizResult) quizResult.textContent = 'Chọn đáp án để nhận phản hồi ngay. Nút “Chấm 5 câu” dùng để xem tổng điểm.';
+        }
+
+        function giveImmediateFeedback(i) {
+            const item = quizData[i];
+            const box = quizQuestions.querySelector(`.quiz-item[data-q="${i}"]`);
+            if (!box) return;
+            const picked = box.querySelector(`input[name="q${i}"]:checked`);
+            if (!picked) return;
+            const fb = box.querySelector('.quiz-feedback');
+            const labels = [...box.querySelectorAll('.quiz-option')];
+            labels.forEach(x => x.classList.remove('border-emerald-500','border-rose-500','bg-emerald-950/40','bg-rose-950/40'));
+            fb.className = 'quiz-feedback mt-2 text-[11px] rounded-lg px-2.5 py-2';
+            const val = Number(picked.value);
+            if (val === item.c) {
+                picked.closest('label').classList.add('border-emerald-500','bg-emerald-950/40');
+                fb.textContent = '✓ Đúng. ' + item.e;
+                fb.classList.add('text-emerald-300','bg-emerald-950/40');
+            } else {
+                picked.closest('label').classList.add('border-rose-500','bg-rose-950/40');
+                const correct = box.querySelector(`input[name="q${i}"][value="${item.c}"]`);
+                if (correct) correct.closest('label').classList.add('border-emerald-500','bg-emerald-950/40');
+                fb.textContent = `✗ Sai. Đáp án đúng là ${String.fromCharCode(65 + item.c)}. ${item.e}`;
+                fb.classList.add('text-rose-300','bg-rose-950/40');
+            }
+            // cập nhật điểm tạm thời theo các câu đã chọn
+            let score = 0, answered = 0;
+            quizData.forEach((q, k) => {
+                const p = quizQuestions.querySelector(`input[name="q${k}"]:checked`);
+                if (p) { answered++; if (Number(p.value) === q.c) score++; }
+            });
+            quizScore.textContent = `${score} / 5`;
+            quizResult.textContent = `Đã trả lời ${answered}/5 câu • Đúng ${score} câu.`;
+        }
+
+        function gradeQuiz() {
+            let score = 0, answered = 0;
+            quizData.forEach((item, i) => {
+                const box = quizQuestions.querySelector(`.quiz-item[data-q="${i}"]`);
+                if (!box) return;
+                const picked = box.querySelector(`input[name="q${i}"]:checked`);
+                const fb = box.querySelector('.quiz-feedback');
+                const labels = [...box.querySelectorAll('.quiz-option')];
+                labels.forEach(x => x.classList.remove('border-emerald-500','border-rose-500','bg-emerald-950/40','bg-rose-950/40'));
+                fb.className = 'quiz-feedback mt-2 text-[11px] rounded-lg px-2.5 py-2';
+                if (!picked) {
+                    fb.textContent = '⚠ Bạn chưa chọn đáp án cho câu này.';
+                    fb.classList.add('text-amber-300','bg-amber-950/40');
+                    return;
+                }
+                answered++;
+                const val = Number(picked.value);
+                if (val === item.c) {
+                    score++;
+                    picked.closest('label').classList.add('border-emerald-500','bg-emerald-950/40');
+                    fb.textContent = '✓ Chính xác. ' + item.e;
+                    fb.classList.add('text-emerald-300','bg-emerald-950/40');
+                } else {
+                    picked.closest('label').classList.add('border-rose-500','bg-rose-950/40');
+                    const correct = box.querySelector(`input[name="q${i}"][value="${item.c}"]`);
+                    if (correct) correct.closest('label').classList.add('border-emerald-500','bg-emerald-950/40');
+                    fb.textContent = '✗ Chưa chính xác. ' + item.e;
+                    fb.classList.add('text-rose-300','bg-rose-950/40');
+                }
+            });
+            quizScore.textContent = `${score} / 5`;
+            quizResult.textContent = answered < 5 ? `Bạn đã trả lời ${answered}/5 câu. Hãy hoàn thành các câu còn lại.` : (score === 5 ? 'Xuất sắc! Bạn đã trả lời đúng cả 5 câu.' : `Bạn trả lời đúng ${score}/5 câu. Có thể xem phản hồi rồi làm lại.`);
+        }
+
+        renderQuiz();
+        if (quizSubmit) quizSubmit.onclick = gradeQuiz;
+        if (quizReset) quizReset.onclick = () => { renderQuiz(); quizPanel.scrollIntoView({behavior:'smooth', block:'start'}); };
+
+        // Action Button Flow Controller
+        executeBtn.addEventListener('click', () => {
+            if (ExperimentState.isBusy) return;
+
+            switch (ExperimentState.step) {
+                case 1:
+                    runStep1();
+                    break;
+                case 2:
+                    runStep2();
+                    break;
+                case 3:
+                    runStep3();
+                    break;
+                case 4:
+                    runStep4();
+                    break;
+                case 5:
+                    runStep5();
+                    break;
+                case 6:
+                    runStep6();
+                    break;
+                default:
+                    resetLaboratory();
+                    break;
+            }
+        });
+
+        // Reset Laboratory State
+        function resetLaboratory() {
+            ExperimentState.step = 1;
+            ExperimentState.isBusy = false;
+            resetEquations();
+            quizPanel.classList.add('hidden');
+            renderQuiz();
+            document.getElementById('tube-1-apparatus').style.visibility='visible';
+            document.getElementById('tube-2-apparatus').style.visibility='visible';
+            transferPipette.style.opacity='0';
+
+            liquidTube1.style.height = '0%';
+            liquidTube1.style.background = 'rgba(241, 245, 249, 0.4)';
+            liquidTube1.style.boxShadow = 'none';
+            liquidTube1.style.opacity = '1';
+            bubblesContainer1.innerHTML = '';
+            powderSediment1.style.opacity = '0';
+
+            liquidTube2.style.height = '0%';
+            liquidTube2.style.background = 'transparent';
+            liquidTube2.style.opacity = '1';
+            precipitateCloud2.style.opacity = '0';
+            sedimentLayer2.style.background = 'transparent';
+
+            submergedTubeGhost.style.opacity = '0';
+            steamContainer.style.opacity = '0';
+            heatCoil.className = "w-24 h-2.5 rounded-full bg-slate-600";
+            stoveLight.className = "w-2.5 h-2.5 rounded-full bg-rose-950 border border-rose-800";
+            stoveTempLabel.textContent = "Bếp: Tắt (Nguội)";
+            stoveTempLabel.className = "text-[11px] text-slate-400 mt-1 font-mono";
+
+            tube1Label.textContent = "Chưa có mẫu";
+            tube1Label.className = "text-[11px] text-slate-400 font-mono block";
+            tube1Desc.textContent = "Đang chờ nạp hóa chất";
+
+            tube2Label.textContent = "Ống nghiệm sạch";
+            tube2Label.className = "text-[11px] text-slate-400 font-mono block";
+            tube2Desc.textContent = "Dự bị cho Cu(OH)₂";
+
+            reactionStatePill.textContent = "Chờ bắt đầu";
+            reactionStatePill.className = "px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700";
+
+            bannerTitle.textContent = "Chuẩn bị mẫu thủy phân ở Ống nghiệm 1";
+            bannerDesc.textContent = "Cho khoảng 5 mL dung dịch hồ tinh bột 1% vào Ống nghiệm 1, sau đó thêm 1 mL dung dịch HCl 1 M làm xúc tác acid và lắc đều.";
+            executeBtnText.textContent = "Bước 1: Cho 5mL Tinh bột + 1mL HCl vào Ống 1";
+            executeBtn.disabled = false;
+
+            microTitle.textContent = "Trạng thái: Dung dịch keo Tinh bột ban đầu";
+            microViewContent.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <div class="flex items-center gap-1.5 p-1.5 rounded-lg bg-slate-900 border border-slate-700">
+                        <span class="px-2 py-0.5 rounded bg-blue-950 text-blue-200 text-xs font-mono font-bold">Amylose / Amylopectin (C₆H₁₀O₅)ₙ</span>
+                        <span class="text-slate-400 text-xs">(Polysaccharide cấu trúc xoắn)</span>
+                    </div>
+                    <span class="text-[10px] text-amber-300/80 mt-1">Không có nhóm -CHO tự do &bull; Không có tính khử Cu(OH)₂</span>
+                </div>
+            `;
+
+            updateStepUI(1);
+        }
+
+        resetLabBtn.addEventListener('click', resetLaboratory);
+
+        // Previous step handler for user control
+        prevStepBtn.addEventListener('click', () => {
+            if (ExperimentState.isBusy || ExperimentState.step <= 1) return;
+            // Simple rewind to step 1 for cleanliness and safety
+            resetLaboratory();
+        });
+    </script>
+</body>
+</html>
